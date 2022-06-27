@@ -1,0 +1,27 @@
+config = {
+     SOI
+     ~ ((mode_block | stmt | unknown)? ~ NEWLINE)*
+     ~ EOI
+}
+unknown = _{(!stmt ~ !NEWLINE ~ ANY)+}
+mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{"~ ( !"}" ~ ANY )* ~ "}" }
+stmt = { expr }
+expr = { keybinding }
+
+keybinding = { bindsym | bindcode }
+
+bindsym = { "bindsym" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindcode = { "bindcode" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
+
+binding = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ ( keycode | keysym ) }
+modifier = @{ ("Mod" ~ '1'..'5') | "Ctrl" | "Alt" | "Shift" }
+group = @{ "Group" ~ '1'..'5' }
+keysym =  @{(!ws ~ ANY)+}
+keycode = @{(ASCII_DIGIT)+}
+command = { (!nl ~ ANY)+ }
+
+ws = _{ WHITESPACE }
+nl    = _{ "\n" | "\r\n" }
+
+WHITESPACE = _{ " " | "\t" }
+COMMENT    = _{ ("#" ~ (!NEWLINE ~ ANY)*) }
