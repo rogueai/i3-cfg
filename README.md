@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/rogueai/i3-cfg/actions/workflows/ci.yml/badge.svg)](https://github.com/rogueai/i3-cfg/actions/workflows/ci.yml)
 
-This project aims a providing [i3wm](https://i3wm.org/) configuration in structured way, so that it could be used by 
+This project aims at providing [i3wm](https://i3wm.org/) configuration in structured way, so that it could be used by 
 other programs.
 
 ## Example output
@@ -14,19 +14,28 @@ other programs.
       "modifiers": [
         "Mod4"
       ],
-      "key": "y",
-      "command": "border pixel 1"
+      "keysym": "u",
+      "criteria": "[class=\"Firefox\" window_role=\"About\"]",
+      "command": "border none"
     },
     {
       "modifiers": [
-        "Mod4",
-        "Shift"
+        "Mod4"
       ],
-      "key": "q",
-      "command": "kill"
+      "keysym": "n",
+      "command": "border normal"
+    },
+    {
+      "modifiers": [],
+      "keysym": "XF86MonBrightnessUp",
+      "command": "exec \"brightnessctl set +10%; notify-send 'brightness up'\""
+    },
+    {
+      "modifiers": [],
+      "button": 5,
+      "command": "nop"
     }
-  ],
-  <...>
+  ]
 }
 ```
 ## Requirements
