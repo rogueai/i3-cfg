@@ -9,27 +9,28 @@ pub struct Config {
 #[derive(Serialize, Deserialize, Default, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Keybinding {
+    #[serde(flatten)]
+    pub variant: KeybindingType,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     pub modifiers: Vec<String>,
-    #[serde(flatten)]
-    pub variant: KeybindingVariant,
+    pub key: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub criteria: Option<String>,
     pub command: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-#[serde(untagged, rename_all = "camelCase")]
-pub enum KeybindingVariant {
-    Keysym { keysym: String },
-    Keycode { keycode: u8 },
-    Button { button: u8 },
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum KeybindingType {
+    Keysym,
+    Keycode,
+    Button,
     Unknown,
 }
 
-impl Default for KeybindingVariant {
+impl Default for KeybindingType {
     fn default() -> Self {
-        KeybindingVariant::Unknown
+        KeybindingType::Unknown
     }
 }

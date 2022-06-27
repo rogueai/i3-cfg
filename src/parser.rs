@@ -1,4 +1,4 @@
-use crate::model::{Config, Keybinding, KeybindingVariant};
+use crate::model::{Config, Keybinding, KeybindingType};
 use pest::iterators::Pair;
 use pest::Parser;
 
@@ -19,7 +19,7 @@ pub fn parse(config: String) {
     let json = serde_json::to_string_pretty(&result).unwrap();
     println!("{}", json);
 }
-
+/// Recursively parse [Pair]s and populate keybindings.
 fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
     for child in parent.into_inner() {
         match child.as_rule() {
@@ -37,23 +37,20 @@ fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
             }
             Rule::keycode => {
                 let mut kb = keybindings.pop().unwrap();
-                kb.variant = KeybindingVariant::Keycode {
-                    keycode: child.as_str().parse().unwrap(),
-                };
+                kb.variant = KeybindingType::Keycode;
+                kb.key = child.as_str().parse().unwrap();
                 keybindings.push(kb);
             }
             Rule::keysym => {
                 let mut kb = keybindings.pop().unwrap();
-                kb.variant = KeybindingVariant::Keysym {
-                    keysym: child.as_str().parse().unwrap(),
-                };
+                kb.variant = KeybindingType::Keysym;
+                kb.key = child.as_str().parse().unwrap();
                 keybindings.push(kb);
             }
             Rule::button => {
                 let mut kb = keybindings.pop().unwrap();
-                kb.variant = KeybindingVariant::Button {
-                    button: child.as_str().parse().unwrap(),
-                };
+                kb.variant = KeybindingType::Button;
+                kb.key = child.as_str().parse().unwrap();
                 keybindings.push(kb);
             }
             Rule::group => {

@@ -3,11 +3,15 @@ config = {
      ~ ((mode_block | stmt | unknown)? ~ NEWLINE)*
      ~ EOI
 }
+
 unknown = _{(!stmt ~ !NEWLINE ~ ANY)+}
-mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{"~ ( !"}" ~ ANY )* ~ "}" }
+// binding modes are silent and ignored
+mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{" ~ ( !"}" ~ ANY )* ~ "}" }
+
 stmt = { expr }
 expr = { keybinding }
 
+// order of precedence is important as both bindmouse and bindsym fall into bindsym
 keybinding = { bindmouse | bindsym | bindcode }
 
 bindsym = { "bindsym" ~ "--release"? ~ binding_sym ~ criteria? ~ command }
@@ -25,6 +29,7 @@ keycode = @{(ASCII_DIGIT)+}
 button = @{(ASCII_DIGIT)+}
 
 command = { command_name ~ (!nl ~ ANY)+? }
+// Command name dictionary
 command_name = {
     "exec"
     | "split"
@@ -50,6 +55,7 @@ command_name = {
 }
 criteria = { "[" ~ criterion ~ criterion* ~ "]" }
 criterion = @{ criterion_name ~ "=" ~ "\"" ~ (!"\"" ~ ANY)+ ~ "\"" }
+// Criterion name dictionary
 criterion_name = {
     "all"
     | "class"
