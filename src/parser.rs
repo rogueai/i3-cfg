@@ -23,30 +23,36 @@ pub fn parse(config: String) {
 fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
     for child in parent.into_inner() {
         match child.as_rule() {
-            Rule::stmt => parse_pair(child, keybindings),
-            Rule::expr => parse_pair(child, keybindings),
-            Rule::keybinding => parse_pair(child, keybindings),
-            Rule::binding => {
+            Rule::stmt
+            | Rule::expr
+            | Rule::keybinding
+            | Rule::bindsym
+            | Rule::bindcode
+            | Rule::bindmouse => {
+                parse_pair(child, keybindings);
+            }
+            Rule::binding_sym | Rule::binding_code | Rule::binding_mouse => {
                 keybindings.push(Keybinding::default());
-                parse_pair(child, keybindings);
-            }
-            Rule::bindsym => {
-                parse_pair(child, keybindings);
-            }
-            Rule::bindcode => {
                 parse_pair(child, keybindings);
             }
             Rule::keycode => {
                 let mut kb = keybindings.pop().unwrap();
                 kb.variant = KeybindingVariant::Keycode {
-                    code: child.as_str().parse().unwrap(),
+                    keycode: child.as_str().parse().unwrap(),
                 };
                 keybindings.push(kb);
             }
             Rule::keysym => {
                 let mut kb = keybindings.pop().unwrap();
                 kb.variant = KeybindingVariant::Keysym {
-                    key: child.as_str().parse().unwrap(),
+                    keysym: child.as_str().parse().unwrap(),
+                };
+                keybindings.push(kb);
+            }
+            Rule::button => {
+                let mut kb = keybindings.pop().unwrap();
+                kb.variant = KeybindingVariant::Button {
+                    button: child.as_str().parse().unwrap(),
                 };
                 keybindings.push(kb);
             }

@@ -8,16 +8,21 @@ mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{"~ ( !"}"
 stmt = { expr }
 expr = { keybinding }
 
-keybinding = { bindsym | bindcode }
+keybinding = { bindmouse | bindsym | bindcode }
 
-bindsym = { "bindsym" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
-bindcode = { "bindcode" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindsym = { "bindsym" ~ "--release"? ~ binding_sym ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindcode = { "bindcode" ~ "--release"? ~ binding_code ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindmouse = { "bindsym" ~ "--release"? ~ "--border"? ~ "--whole-window"? ~ "--exclude-titlebar"? ~ binding_mouse ~ "exec"? ~ "--no-startup-id"? ~ command }
 
-binding = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ ( keycode | keysym ) }
+binding_sym = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keysym }
+binding_code = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keycode }
+binding_mouse = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ "button" ~  button}
+
 modifier = @{ ("Mod" ~ '1'..'5') | "Ctrl" | "Alt" | "Shift" }
 group = @{ "Group" ~ '1'..'5' }
 keysym =  @{(!ws ~ ANY)+}
 keycode = @{(ASCII_DIGIT)+}
+button = @{(ASCII_DIGIT)+}
 command = { (!nl ~ ANY)+ }
 
 ws = _{ WHITESPACE }

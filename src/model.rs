@@ -20,8 +20,9 @@ pub struct Keybinding {
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(untagged, rename_all = "camelCase")]
 pub enum KeybindingVariant {
-    Keysym { key: String },
-    Keycode { code: u8 },
+    Keysym { keysym: String },
+    Keycode { keycode: u8 },
+    Button { button: u8 },
     Unknown,
 }
 
