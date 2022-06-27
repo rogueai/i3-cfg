@@ -6,7 +6,7 @@ use pest::Parser;
 #[grammar = "grammar/i3-cfg.pest"]
 pub struct I3Parser;
 
-pub fn parse(config: String) {
+pub fn parse(config: String) -> Config {
     let config = I3Parser::parse(Rule::config, &config)
         .expect("parse failed") // unwrap the parse result
         .next()
@@ -15,9 +15,7 @@ pub fn parse(config: String) {
     let mut keybindings: Vec<Keybinding> = vec![];
     parse_pair(config, &mut keybindings);
 
-    let result = Config { keybindings };
-    let json = serde_json::to_string_pretty(&result).unwrap();
-    println!("{}", json);
+    Config { keybindings }
 }
 /// Recursively parse [Pair]s and populate keybindings.
 fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
@@ -76,5 +74,28 @@ fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
             Rule::EOI => (),
             _ => unreachable!(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde::ser;
+
+    #[test]
+    fn test_keysym() {
+        let config = r###"
+        bindsym Mod4+u border none
+        "###;
+        let config = parse(String::from(config));
+        let json = serde_json::to_string_pretty(&config).unwrap();
+        assert_eq!(
+            json,
+            r###"
+        {
+            "config"
+        }
+        "###
+        )
     }
 }

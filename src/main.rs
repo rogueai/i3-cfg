@@ -15,5 +15,8 @@ fn main() {
 
     // request and print the i3 version
     let reply = connection.get_variable_replaced_config().unwrap();
-    parser::parse(reply.config);
+    let config = parser::parse(reply.config);
+
+    let json = serde_json::to_string_pretty(&config).unwrap();
+    println!("{}", json);
 }
