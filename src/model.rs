@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
     pub keybindings: Vec<Keybinding>,
 }
 
-#[derive(Serialize, Deserialize, Default, Debug)]
+#[derive(Serialize, Deserialize, Default, PartialEq, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Keybinding {
     #[serde(flatten)]
@@ -20,7 +20,7 @@ pub struct Keybinding {
     pub command: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug)]
 #[serde(tag = "type", rename_all = "camelCase")]
 pub enum KeybindingType {
     Keysym,

@@ -80,22 +80,108 @@ fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serde::ser;
+    use insta::assert_json_snapshot;
 
     #[test]
-    fn test_keysym() {
+    fn test_comment() {
+        let config = r###"
+        # this is a comment
+        # and another one
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_mode() {
+        let config = r###"
+        mode "resize" {
+            # Pressing down will grow the window’s height.
+            bindsym j resize shrink width 5 px or 5 ppt
+            bindsym k resize grow height 5 px or 5 ppt
+            bindsym l resize shrink height 5 px or 5 ppt
+            bindsym semicolon resize grow width 5 px or 5 ppt
+        }
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bar() {
+        let config = r###"
+        bar {
+            # Pressing down will grow the window’s height.
+            bindsym j resize shrink width 5 px or 5 ppt
+            bindsym k resize grow height 5 px or 5 ppt
+            bindsym l resize shrink height 5 px or 5 ppt
+            bindsym semicolon resize grow width 5 px or 5 ppt
+        }
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindsym_modifier_1() {
         let config = r###"
         bindsym Mod4+u border none
         "###;
         let config = parse(String::from(config));
-        let json = serde_json::to_string_pretty(&config).unwrap();
-        assert_eq!(
-            json,
-            r###"
-        {
-            "config"
-        }
-        "###
-        )
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindsym_modifier_2() {
+        let config = r###"
+        bindsym Mod4+Shift+r restart
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindsym_release() {
+        let config = r###"
+        bindsym --release Mod4+x exec --no-startup-id import /tmp/latest-screenshot.png
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindcode_1() {
+        let config = r###"
+        bindcode 214 exec --no-startup-id /home/michael/toggle_beamer.sh
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindmouse_1() {
+        let config = r###"
+        bindsym --release button2 kill
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindmouse_2() {
+        let config = r###"
+        bindsym --whole-window Mod4+button2 kill
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
+    }
+
+    #[test]
+    fn test_bindmouse_3() {
+        let config = r###"
+        bindsym button8 move right
+        "###;
+        let config = parse(String::from(config));
+        assert_json_snapshot!(config);
     }
 }

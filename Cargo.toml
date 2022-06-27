@@ -12,3 +12,6 @@ serde_json = "1.0"
 [dependencies.i3ipc]
 git = "https://github.com/rogueai/i3ipc-rs.git"
 features = ["i3-4-14"]
+
+[dev-dependencies]
+insta = "1.15.0"
