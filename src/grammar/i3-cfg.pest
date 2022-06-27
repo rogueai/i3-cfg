@@ -1,26 +1,31 @@
 config = {
      SOI
-     ~ ((mode_block | stmt | unknown)? ~ NEWLINE)*
+     ~ (( stmt | mode_block | bar_block | unknown )? ~ NEWLINE)*
      ~ EOI
 }
 
 unknown = _{(!stmt ~ !NEWLINE ~ ANY)+}
 // binding modes are silent and ignored
 mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{" ~ ( !"}" ~ ANY )* ~ "}" }
+bar_block = _{ "bar" ~ "{" ~ ( !"}" ~ ANY )* ~ "}" }
 
 stmt = { expr }
 expr = { keybinding }
 
 // order of precedence is important as both bindmouse and bindsym fall into bindsym
-keybinding = { bindmouse | bindsym | bindcode }
+keybinding = {
+    bindmouse
+    | bindsym
+    | bindcode
+}
 
 bindsym = { "bindsym" ~ "--release"? ~ binding_sym ~ criteria? ~ command }
 bindcode = { "bindcode" ~ "--release"? ~ binding_code ~ criteria? ~ command }
-bindmouse = { "bindsym" ~ "--release"? ~ "--border"? ~ "--whole-window"? ~ "--exclude-titlebar"? ~ binding_mouse ~ criteria? ~ command }
+bindmouse = { "bindsym" ~ ( "--release" | "--border" | "--whole-window" | "--exclude-titlebar" )* ~ binding_mouse ~ criteria? ~ command }
 
 binding_sym = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keysym }
 binding_code = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keycode }
-binding_mouse = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ "button" ~  button}
+binding_mouse = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ (!ws ~ "button" ~  button) }
 
 modifier = @{ ("Mod" ~ '1'..'5') | "Ctrl" | "Alt" | "Shift" }
 group = @{ "Group" ~ '1'..'5' }
@@ -52,7 +57,9 @@ command_name = {
     | "scratchpad"
     | "nop"
     | "bar"
+    | "kill"
 }
+
 criteria = { "[" ~ criterion ~ criterion* ~ "]" }
 criterion = @{ criterion_name ~ "=" ~ "\"" ~ (!"\"" ~ ANY)+ ~ "\"" }
 // Criterion name dictionary
