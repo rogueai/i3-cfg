@@ -10,9 +10,9 @@ expr = { keybinding }
 
 keybinding = { bindmouse | bindsym | bindcode }
 
-bindsym = { "bindsym" ~ "--release"? ~ binding_sym ~ "exec"? ~ "--no-startup-id"? ~ command }
-bindcode = { "bindcode" ~ "--release"? ~ binding_code ~ "exec"? ~ "--no-startup-id"? ~ command }
-bindmouse = { "bindsym" ~ "--release"? ~ "--border"? ~ "--whole-window"? ~ "--exclude-titlebar"? ~ binding_mouse ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindsym = { "bindsym" ~ "--release"? ~ binding_sym ~ criteria? ~ command }
+bindcode = { "bindcode" ~ "--release"? ~ binding_code ~ criteria? ~ command }
+bindmouse = { "bindsym" ~ "--release"? ~ "--border"? ~ "--whole-window"? ~ "--exclude-titlebar"? ~ binding_mouse ~ criteria? ~ command }
 
 binding_sym = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keysym }
 binding_code = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ keycode }
@@ -23,10 +23,54 @@ group = @{ "Group" ~ '1'..'5' }
 keysym =  @{(!ws ~ ANY)+}
 keycode = @{(ASCII_DIGIT)+}
 button = @{(ASCII_DIGIT)+}
-command = { (!nl ~ ANY)+ }
+
+command = { command_name ~ (!nl ~ ANY)+? }
+command_name = {
+    "exec"
+    | "split"
+    | "layout"
+    | "focus"
+    | "move"
+    | "swap"
+    | "sticky"
+    | "workspace"
+    | "resize"
+    | "mark"
+    | "title_format"
+    | "title_window_icon"
+    | "border"
+    | "shmlog"
+    | "debuglog"
+    | "restart"
+    | "reload"
+    | "exit"
+    | "scratchpad"
+    | "nop"
+    | "bar"
+}
+criteria = { "[" ~ criterion ~ criterion* ~ "]" }
+criterion = @{ criterion_name ~ "=" ~ "\"" ~ (!"\"" ~ ANY)+ ~ "\"" }
+criterion_name = {
+    "all"
+    | "class"
+    | "instance"
+    | "window_role"
+    | "window_type"
+    | "machine"
+    | "id"
+    | "title"
+    | "urgent"
+    | "workspace"
+    | "con_mark"
+    | "con_id"
+    | "floating"
+    | "floating_from"
+    | "tiling"
+    | "tiling_from"
+}
 
 ws = _{ WHITESPACE }
-nl    = _{ "\n" | "\r\n" }
+nl = _{ "\n" | "\r\n" }
 
 WHITESPACE = _{ " " | "\t" }
 COMMENT    = _{ ("#" ~ (!NEWLINE ~ ANY)*) }

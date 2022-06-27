@@ -14,6 +14,8 @@ pub struct Keybinding {
     pub modifiers: Vec<String>,
     #[serde(flatten)]
     pub variant: KeybindingVariant,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub criteria: Option<String>,
     pub command: String,
 }
 

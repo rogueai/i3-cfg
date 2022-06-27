@@ -66,6 +66,11 @@ fn parse_pair(parent: Pair<Rule>, keybindings: &mut Vec<Keybinding>) {
                 kb.modifiers.push(String::from(child.as_str()));
                 keybindings.push(kb);
             }
+            Rule::criteria => {
+                let mut kb = keybindings.pop().unwrap();
+                kb.criteria = Some(String::from(child.as_str()));
+                keybindings.push(kb);
+            }
             Rule::command => {
                 let mut kb = keybindings.pop().unwrap();
                 kb.command = String::from(child.as_str());
