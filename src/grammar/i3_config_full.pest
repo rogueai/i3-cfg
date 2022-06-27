@@ -1,0 +1,54 @@
+config = {
+     SOI
+     ~ ((stmt | mode_block | unknown)? ~ NEWLINE)*
+     ~ EOI
+}
+unknown = _{(!stmt ~ !NEWLINE ~ ANY)+}
+mode_block = _{ "mode" ~ "\"" ~ ( !"\"" ~ !NEWLINE ~ ANY )+ ~ "\"" ~ "{"~ ( !"}" ~ ANY )* ~ "}" }
+stmt = { expr }
+expr = { keybind }
+
+keybind = { bindsym | bindcode }
+
+bindsym = { "bindsym" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
+bindcode = { "bindcode" ~ "--release"? ~ binding ~ "exec"? ~ "--no-startup-id"? ~ command }
+
+binding = ${ (group ~ "+")? ~ (modifier ~ "+")* ~ ( keycode | keysym ) }
+modifier = @{ ("Mod" ~ '1'..'5') | "Ctrl" | "Alt" | "Shift" }
+group = @{ "Group" ~ '1'..'5' }
+command = { (!newline ~ ANY)+ }
+keysym =  @{(!ws ~ ANY)+}
+keycode = @{(ASCII_DIGIT)+}
+
+// X Logical Font Description - basic parsing
+// xlsfonts -fn "-*-*-*-*--*-*-*-*-*-*-iso10646-1"
+// e.g.:
+//   -adobe-new century schoolbook-bold-i-normal--24-240-75-75-p-148-iso10646-1
+xlfd = {("-" ~ alpha+){3} ~ "-" ~ alpha ~ "-" ~ alpha+ ~ "-" ~ ("-" ~ digit+){4} ~ "-" ~ alpha ~ "-" ~ digit+ ~ "-iso10646-1" }
+
+// FreeType Font Definition
+// pango:<family list> [<style options>] <size>
+// e.g.:
+//   pango:DejaVu Sans Mono 10
+//   pango:DejaVu Sans Mono, Terminus Bold Semi-Condensed 11
+//   pango:Terminus 11px
+ftfd = { "pango:" ~ (alpha)+ ~ ( alpha)+ ~ (digit+) ~ "px"? }
+
+font = {
+    "font" ~ (xlfd | ftfd)
+}
+
+var = { set ~ var_name ~ var_value }
+set = _{ "set" }
+var_name = @{ ("$" ~ alpha+) }
+var_value = @{ (alpha+) }
+
+any = _{ ANY }
+any_literal = _{ !ws ~ any }
+alpha = _{ ASCII_ALPHANUMERIC }
+digit = { ASCII_DIGIT }
+
+ws = _{ WHITESPACE }
+newline    = _{ "\n" | "\r\n" }
+WHITESPACE = _{ " " | "\t" }
+COMMENT    = _{ ("#" ~ (!NEWLINE ~ ANY)*) }

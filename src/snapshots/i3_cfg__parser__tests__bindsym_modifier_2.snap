@@ -1,0 +1,17 @@
+---
+source: src/parser.rs
+expression: config
+---
+{
+  "keybindings": [
+    {
+      "type": "keysym",
+      "modifiers": [
+        "Mod4",
+        "Shift"
+      ],
+      "key": "r",
+      "command": "restart"
+    }
+  ]
+}

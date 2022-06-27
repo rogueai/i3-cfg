@@ -1,0 +1,16 @@
+---
+source: src/parser.rs
+expression: config
+---
+{
+  "keybindings": [
+    {
+      "type": "keysym",
+      "modifiers": [
+        "Mod4"
+      ],
+      "key": "u",
+      "command": "border none"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+source: src/parser.rs
+expression: config
+---
+{
+  "keybindings": [
+    {
+      "type": "keycode",
+      "modifiers": [],
+      "key": "214",
+      "command": "exec --no-startup-id /home/michael/toggle_beamer.sh"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+---
+source: src/parser.rs
+expression: config
+---
+{
+  "keybindings": [
+    {
+      "type": "button",
+      "modifiers": [],
+      "key": "2",
+      "command": "kill"
+    }
+  ]
+}
