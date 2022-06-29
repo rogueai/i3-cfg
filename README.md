@@ -1,6 +1,6 @@
 # i3-cfg
 
-[![CI](https://github.com/rogueai/i3-cfg/actions/workflows/ci.yml/badge.svg)](https://github.com/rogueai/i3-cfg/actions/workflows/ci.yml)
+[![CI](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml/badge.svg)](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml)
 
 This project aims at providing [i3wm](https://i3wm.org/) configuration in structured way, so that it could be used by 
 other programs.
