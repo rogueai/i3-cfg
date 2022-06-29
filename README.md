@@ -1,6 +1,6 @@
 # i3-cfg
 
-[![CI](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml/badge.svg)](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml)
+[![build](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml/badge.svg)](https://github.com/rogueai/i3-cfg/actions/workflows/build.yml)
 
 This project aims at providing [i3wm](https://i3wm.org/) configuration in structured way, so that it could be used by 
 other programs.
@@ -9,7 +9,11 @@ other programs.
 
 - `i3 version 4.14` or later
 
-## Install and run
+## Installation
+### Release binary
+A pre-built Linux x86_64 package is available in the releases page.
+
+### From source
 The project is built using Rust edition 2021, and requires Rust `v1.56.0` or later to build.
 
 Build and run using Cargo:
